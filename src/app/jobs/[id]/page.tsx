@@ -1,15 +1,28 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import PublicHeader from "@/components/PublicHeader";
 
 export const dynamic = "force-dynamic";
 
+function parseJSON<T>(raw: string, fallback: T): T {
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+}
+
 export default async function JobDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ applied?: string }>;
 }) {
   const { id } = await params;
+  const { applied } = await searchParams;
+
   const job = await prisma.job.findUnique({
     where: { id },
     include: { company: { select: { name: true } } },
@@ -19,29 +32,25 @@ export default async function JobDetailPage({
     notFound();
   }
 
-  const customQuestions = JSON.parse(job.customQuestions || "[]") as {
-    label: string;
-    type: string;
-  }[];
+  const customQuestions = parseJSON<{ label: string; type: string }[]>(
+    job.customQuestions,
+    []
+  );
 
   return (
     <div className="flex flex-col flex-1">
-      <header className="border-b">
-        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold">
-            Talent Marketplace
-          </Link>
-          <nav className="flex items-center gap-4">
-            <Link
-              href="/company/login"
-              className="text-sm px-4 py-2 bg-black text-white rounded-md hover:bg-zinc-800"
-            >
-              Company Login
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <PublicHeader />
       <main className="flex-1 max-w-3xl mx-auto px-4 py-12 w-full">
+        {applied === "true" && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-md">
+            <p className="text-green-800 font-medium">
+              Application submitted successfully!
+            </p>
+            <p className="text-green-700 text-sm mt-1">
+              The company will review your application and reach out.
+            </p>
+          </div>
+        )}
         <Link
           href="/jobs"
           className="text-sm text-zinc-500 hover:underline mb-4 inline-block"
@@ -67,12 +76,14 @@ export default async function JobDetailPage({
             </ul>
           </div>
         )}
-        <Link
-          href={`/jobs/${job.id}/apply`}
-          className="inline-block px-6 py-3 bg-black text-white rounded-md hover:bg-zinc-800"
-        >
-          Apply Now
-        </Link>
+        {applied !== "true" && (
+          <Link
+            href={`/jobs/${job.id}/apply`}
+            className="inline-block px-6 py-3 min-h-[44px] leading-10 bg-black text-white rounded-md hover:bg-zinc-800"
+          >
+            Apply Now
+          </Link>
+        )}
       </main>
     </div>
   );

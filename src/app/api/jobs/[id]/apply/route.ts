@@ -8,6 +8,14 @@ const applySchema = z.object({
   email: z.string().email("Valid email is required"),
   phone: z.string().optional(),
   skills: z.string().min(1, "Skills are required"),
+  customAnswers: z
+    .array(
+      z.object({
+        questionLabel: z.string(),
+        answer: z.string(),
+      })
+    )
+    .default([]),
 });
 
 export async function POST(
@@ -35,7 +43,7 @@ export async function POST(
       );
     }
 
-    const { name, email, phone, skills } = parsed.data;
+    const { name, email, phone, skills, customAnswers } = parsed.data;
 
     let applicant = await prisma.applicant.findFirst({
       where: { email },
@@ -73,7 +81,7 @@ export async function POST(
       data: {
         jobId: id,
         applicantId: applicant.id,
-        customAnswers: "[]",
+        customAnswers: JSON.stringify(customAnswers),
       },
     });
 

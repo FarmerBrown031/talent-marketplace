@@ -30,7 +30,7 @@ export default async function DashboardPage() {
         <div className="flex items-center gap-3">
           <Link
             href="/company/jobs/new"
-            className="px-4 py-2 bg-black text-white rounded-md text-sm hover:bg-zinc-800"
+            className="px-4 py-2 min-h-[44px] leading-5 bg-black text-white rounded-md text-sm hover:bg-zinc-800"
           >
             Post a Job
           </Link>
@@ -43,7 +43,7 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
         <div className="border rounded-lg p-6">
           <p className="text-3xl font-bold">{jobCount}</p>
           <p className="text-sm text-zinc-500">Active Jobs</p>
@@ -54,7 +54,22 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      {jobCount === 0 && (
+        <div className="border rounded-lg p-8 text-center mb-8 bg-zinc-50">
+          <h3 className="font-semibold text-lg mb-2">Get started</h3>
+          <p className="text-zinc-500 text-sm mb-4">
+            Post your first job opening to start receiving applications.
+          </p>
+          <Link
+            href="/company/jobs/new"
+            className="inline-block px-4 py-2 min-h-[44px] leading-5 bg-black text-white rounded-md text-sm hover:bg-zinc-800"
+          >
+            Post a Job
+          </Link>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Link
           href="/company/jobs"
           className="border rounded-lg p-6 hover:border-zinc-400 transition-colors"

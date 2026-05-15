@@ -81,16 +81,16 @@
 | 3 | Company dashboard & layout | ✅ Done |
 | 4 | Job CRUD (create, list, edit, close) | ✅ Done |
 | 5 | Public job listing & detail pages | ✅ Done |
-| 6 | Application form (standard + dynamic custom questions) | ⚠️ Partial — custom questions not rendered dynamically on apply page |
+| 6 | Application form (standard + dynamic custom questions) | ✅ Done |
 | 7 | Company view: applicants per job | ✅ Done |
 | 8 | Company view: full talent pool | ✅ Done |
 | 9 | Company view: edit applicant profiles | ✅ Done |
-| 10 | Polish: error handling, loading, empty states, responsiveness | ❌ Not started |
+| 10 | Polish: error handling, loading, empty states, responsiveness | ✅ Done |
 
 ### Remaining
-- **Polish step 6** — Make the application form read `customQuestions` from the job and render them dynamically
 - **Add middleware** — Central auth guard for `/company/*` routes
-- **Step 10** — Loading skeletons, toasts, responsive polish, error boundaries
+- **Code review report** → `docs/codereview.md`
+- Future: file uploads, email notifications, pagination
 
 ---
 

@@ -20,6 +20,33 @@ const updateSchema = z.object({
     .optional(),
 });
 
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const job = await prisma.job.findUnique({
+      where: { id },
+      include: { company: { select: { name: true } } },
+    });
+
+    if (!job || job.status === "closed") {
+      return NextResponse.json(
+        { error: "Not found" } satisfies ApiResponse,
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ data: job } satisfies ApiResponse);
+  } catch {
+    return NextResponse.json(
+      { error: "Internal server error" } satisfies ApiResponse,
+      { status: 500 }
+    );
+  }
+}
+
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }

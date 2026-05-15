@@ -21,24 +21,35 @@ export default async function CompanyJobsPage() {
         <h1 className="text-2xl font-bold">My Jobs</h1>
         <Link
           href="/company/jobs/new"
-          className="px-4 py-2 bg-black text-white rounded-md text-sm hover:bg-zinc-800"
+          className="px-4 py-2 min-h-[44px] leading-5 bg-black text-white rounded-md text-sm hover:bg-zinc-800"
         >
           Post New Job
         </Link>
       </div>
 
       {jobs.length === 0 ? (
-        <p className="text-zinc-500">No jobs posted yet.</p>
+        <div className="border rounded-lg p-8 text-center bg-zinc-50">
+          <h3 className="font-semibold text-lg mb-2">No jobs posted yet</h3>
+          <p className="text-zinc-500 text-sm mb-4">
+            Create your first job posting to start attracting candidates.
+          </p>
+          <Link
+            href="/company/jobs/new"
+            className="inline-block px-4 py-2 min-h-[44px] leading-5 bg-black text-white rounded-md text-sm hover:bg-zinc-800"
+          >
+            Post a Job
+          </Link>
+        </div>
       ) : (
         <div className="grid gap-4">
           {jobs.map((job) => (
             <div
               key={job.id}
-              className="border rounded-lg p-6 flex items-center justify-between"
+              className="border rounded-lg p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
             >
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="font-semibold">{job.title}</h3>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="font-semibold truncate">{job.title}</h3>
                   <span
                     className={`text-xs px-2 py-0.5 rounded-full ${
                       job.status === "open"
@@ -54,16 +65,16 @@ export default async function CompanyJobsPage() {
                   {job._count.applications} applicant(s)
                 </p>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 shrink-0">
                 <Link
                   href={`/company/jobs/${job.id}/applicants`}
-                  className="text-sm px-3 py-1.5 border rounded-md hover:bg-zinc-50"
+                  className="text-sm px-3 py-1.5 min-h-[44px] leading-7 border rounded-md hover:bg-zinc-50"
                 >
                   Applicants
                 </Link>
                 <Link
                   href={`/company/jobs/${job.id}`}
-                  className="text-sm px-3 py-1.5 border rounded-md hover:bg-zinc-50"
+                  className="text-sm px-3 py-1.5 min-h-[44px] leading-7 border rounded-md hover:bg-zinc-50"
                 >
                   Edit
                 </Link>

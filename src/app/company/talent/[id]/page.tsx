@@ -13,6 +13,14 @@ interface Applicant {
   workHistory: string;
 }
 
+function parseJSON<T>(raw: string, fallback: T): T {
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+}
+
 export default function ApplicantProfilePage() {
   const params = useParams();
   const router = useRouter();
@@ -60,16 +68,22 @@ export default function ApplicantProfilePage() {
   if (!applicant) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-12">
-        <p className="text-zinc-500">Loading...</p>
+        <div className="space-y-4 animate-pulse">
+          <div className="h-8 w-48 bg-zinc-100 rounded-md" />
+          <div className="h-10 bg-zinc-100 rounded-md" />
+          <div className="h-10 bg-zinc-100 rounded-md" />
+          <div className="h-10 bg-zinc-100 rounded-md" />
+          <div className="h-10 bg-zinc-100 rounded-md" />
+          <div className="h-24 bg-zinc-100 rounded-md" />
+        </div>
       </div>
     );
   }
 
-  const workHistory = JSON.parse(applicant.workHistory || "[]") as {
-    company: string;
-    role: string;
-    years: number;
-  }[];
+  const workHistory = parseJSON<{ company: string; role: string; years: number }[]>(
+    applicant.workHistory,
+    []
+  );
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12 w-full">
