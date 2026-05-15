@@ -2,6 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { safeParseJSON } from "@/lib/json";
 
 interface Applicant {
   id: string;
@@ -11,14 +12,6 @@ interface Applicant {
   resumeUrl: string | null;
   skills: string;
   workHistory: string;
-}
-
-function parseJSON<T>(raw: string, fallback: T): T {
-  try {
-    return JSON.parse(raw) as T;
-  } catch {
-    return fallback;
-  }
 }
 
 export default function ApplicantProfilePage() {
@@ -80,10 +73,9 @@ export default function ApplicantProfilePage() {
     );
   }
 
-  const workHistory = parseJSON<{ company: string; role: string; years: number }[]>(
-    applicant.workHistory,
-    []
-  );
+  const workHistory = safeParseJSON<
+    { company: string; role: string; years: number }[]
+  >(applicant.workHistory, []);
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12 w-full">

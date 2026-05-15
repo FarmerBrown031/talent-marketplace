@@ -2,10 +2,14 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword, createSession } from "@/lib/auth";
+import { logger } from "@/lib/logger";
 import type { ApiResponse } from "@/lib/types";
 
 const schema = z.object({
-  email: z.string().email("Invalid email"),
+  email: z
+    .string()
+    .email("Invalid email")
+    .transform((s) => s.trim().toLowerCase()),
   password: z.string().min(1, "Password is required"),
 });
 
@@ -45,7 +49,8 @@ export async function POST(request: Request) {
       { data: { id: company.id, name: company.name, email: company.email } } satisfies ApiResponse,
       { status: 200 }
     );
-  } catch {
+  } catch (err) {
+    logger.error("login route failed", err);
     return NextResponse.json(
       { error: "Internal server error" } satisfies ApiResponse,
       { status: 500 }

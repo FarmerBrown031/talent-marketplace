@@ -35,7 +35,7 @@ model Job {
 model Applicant {
   id           String        @id @default(uuid())
   name         String
-  email        String
+  email        String        @unique
   phone        String?
   resumeUrl    String?
   skills       String

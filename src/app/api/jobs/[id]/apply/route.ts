@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { logger } from "@/lib/logger";
 import type { ApiResponse } from "@/lib/types";
 
 const applySchema = z.object({
   name: z.string().min(1, "Name is required"),
-  email: z.string().email("Valid email is required"),
+  email: z
+    .string()
+    .email("Valid email is required")
+    .transform((s) => s.trim().toLowerCase()),
   phone: z.string().optional(),
   skills: z.string().min(1, "Skills are required"),
   customAnswers: z
@@ -45,26 +49,17 @@ export async function POST(
 
     const { name, email, phone, skills, customAnswers } = parsed.data;
 
-    let applicant = await prisma.applicant.findFirst({
+    const applicant = await prisma.applicant.upsert({
       where: { email },
+      update: {},
+      create: {
+        name,
+        email,
+        phone: phone || null,
+        skills,
+        workHistory: "[]",
+      },
     });
-
-    if (!applicant) {
-      applicant = await prisma.applicant.create({
-        data: {
-          name,
-          email,
-          phone: phone || null,
-          skills,
-          workHistory: "[]",
-        },
-      });
-    } else {
-      applicant = await prisma.applicant.update({
-        where: { id: applicant.id },
-        data: { name, phone: phone || null, skills },
-      });
-    }
 
     const existingApplication = await prisma.application.findUnique({
       where: { jobId_applicantId: { jobId: id, applicantId: applicant.id } },
@@ -89,7 +84,8 @@ export async function POST(
       { data: application } satisfies ApiResponse,
       { status: 201 }
     );
-  } catch {
+  } catch (err) {
+    logger.error("apply route failed", err);
     return NextResponse.json(
       { error: "Internal server error" } satisfies ApiResponse,
       { status: 500 }

@@ -2,6 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { safeParseJSON } from "@/lib/json";
 
 interface CustomQuestion {
   label: string;
@@ -33,7 +34,9 @@ export default function EditJobPage() {
         const found = json.data?.find((j: Job) => j.id === params.id);
         if (found) {
           setJob(found);
-          setCustomQuestions(JSON.parse(found.customQuestions || "[]"));
+          setCustomQuestions(
+            safeParseJSON<CustomQuestion[]>(found.customQuestions, [])
+          );
         }
       });
   }, [params.id]);

@@ -1,17 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { safeParseJSON } from "@/lib/json";
 import PublicHeader from "@/components/PublicHeader";
 
 export const dynamic = "force-dynamic";
-
-function parseJSON<T>(raw: string, fallback: T): T {
-  try {
-    return JSON.parse(raw) as T;
-  } catch {
-    return fallback;
-  }
-}
 
 export default async function JobDetailPage({
   params,
@@ -32,7 +25,7 @@ export default async function JobDetailPage({
     notFound();
   }
 
-  const customQuestions = parseJSON<{ label: string; type: string }[]>(
+  const customQuestions = safeParseJSON<{ label: string; type: string }[]>(
     job.customQuestions,
     []
   );

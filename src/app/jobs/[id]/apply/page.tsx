@@ -2,6 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { safeParseJSON } from "@/lib/json";
 
 interface CustomQuestion {
   label: string;
@@ -34,8 +35,9 @@ export default function ApplyPage() {
         const found = json.data as Job;
         if (found) {
           setJob(found);
-          const questions: CustomQuestion[] = JSON.parse(
-            found.customQuestions || "[]"
+          const questions = safeParseJSON<CustomQuestion[]>(
+            found.customQuestions,
+            []
           );
           setCustomAnswers(
             questions.map((q) => ({ questionLabel: q.label, answer: "" }))
@@ -85,7 +87,7 @@ export default function ApplyPage() {
   }
 
   const questions: CustomQuestion[] = job
-    ? JSON.parse(job.customQuestions || "[]")
+    ? safeParseJSON<CustomQuestion[]>(job.customQuestions, [])
     : [];
 
   return (

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireCompany } from "@/lib/auth";
+import { logger } from "@/lib/logger";
 import type { ApiResponse } from "@/lib/types";
 
 const updateSchema = z.object({
@@ -39,7 +40,8 @@ export async function GET(
     }
 
     return NextResponse.json({ data: job } satisfies ApiResponse);
-  } catch {
+  } catch (err) {
+    logger.error("GET /api/jobs/[id] failed", err);
     return NextResponse.json(
       { error: "Internal server error" } satisfies ApiResponse,
       { status: 500 }
@@ -83,7 +85,14 @@ export async function PATCH(
     });
 
     return NextResponse.json({ data: job } satisfies ApiResponse);
-  } catch {
+  } catch (err) {
+    if (err instanceof Error && err.message === "Unauthorized") {
+      return NextResponse.json(
+        { error: "Unauthorized" } satisfies ApiResponse,
+        { status: 401 }
+      );
+    }
+    logger.error("PATCH /api/jobs/[id] failed", err);
     return NextResponse.json(
       { error: "Internal server error" } satisfies ApiResponse,
       { status: 500 }

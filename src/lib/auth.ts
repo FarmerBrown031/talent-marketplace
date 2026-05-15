@@ -1,8 +1,13 @@
 import { compare, hash } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import {
+  signSession,
+  verifySession,
+  SESSION_MAX_AGE_SECONDS,
+} from "@/lib/session";
 
 const SALT_ROUNDS = 12;
-const SESSION_COOKIE = "company_session";
+export const SESSION_COOKIE = "company_session";
 
 async function getCookieStore() {
   const { cookies } = await import("next/headers");
@@ -15,19 +20,20 @@ export async function hashPassword(password: string): Promise<string> {
 
 export async function verifyPassword(
   password: string,
-  hash: string
+  hashed: string
 ): Promise<boolean> {
-  return compare(password, hash);
+  return compare(password, hashed);
 }
 
 export async function createSession(companyId: string): Promise<void> {
+  const token = await signSession(companyId);
   const cookieStore = await getCookieStore();
-  cookieStore.set(SESSION_COOKIE, companyId, {
+  cookieStore.set(SESSION_COOKIE, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
-    maxAge: 60 * 60 * 24 * 7,
+    maxAge: SESSION_MAX_AGE_SECONDS,
   });
 }
 
@@ -38,11 +44,14 @@ export async function destroySession(): Promise<void> {
 
 export async function getCurrentCompany() {
   const cookieStore = await getCookieStore();
-  const sessionId = cookieStore.get(SESSION_COOKIE)?.value;
-  if (!sessionId) return null;
+  const token = cookieStore.get(SESSION_COOKIE)?.value;
+  if (!token) return null;
+
+  const verified = await verifySession(token);
+  if (!verified) return null;
 
   const company = await prisma.company.findUnique({
-    where: { id: sessionId },
+    where: { id: verified.companyId },
   });
   return company;
 }

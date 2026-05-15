@@ -22,12 +22,14 @@ export default function CompanyLayout({
             <Link href="/company/talent" className="hover:underline">
               Talent
             </Link>
-            <Link
-              href="/api/auth/logout"
-              className="text-zinc-500 hover:underline"
-            >
-              Logout
-            </Link>
+            <form action="/api/auth/logout" method="POST">
+              <button
+                type="submit"
+                className="text-zinc-500 hover:underline"
+              >
+                Logout
+              </button>
+            </form>
           </nav>
         </div>
       </header>

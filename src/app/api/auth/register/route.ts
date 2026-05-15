@@ -2,11 +2,15 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, createSession } from "@/lib/auth";
+import { logger } from "@/lib/logger";
 import type { ApiResponse } from "@/lib/types";
 
 const schema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email"),
+  name: z.string().min(1, "Name is required").transform((s) => s.trim()),
+  email: z
+    .string()
+    .email("Invalid email")
+    .transform((s) => s.trim().toLowerCase()),
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
@@ -43,7 +47,8 @@ export async function POST(request: Request) {
       { data: { id: company.id, name: company.name, email: company.email } } satisfies ApiResponse,
       { status: 201 }
     );
-  } catch {
+  } catch (err) {
+    logger.error("register route failed", err);
     return NextResponse.json(
       { error: "Internal server error" } satisfies ApiResponse,
       { status: 500 }
