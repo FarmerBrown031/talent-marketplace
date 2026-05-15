@@ -25,11 +25,11 @@ export default async function TalentPoolPage() {
   });
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-12 w-full">
-      <h1 className="text-2xl font-bold mb-8">Talent Pool</h1>
+    <main className="max-w-6xl mx-auto px-4 py-10 w-full bg-white">
+      <h1 className="text-2xl font-bold mb-8 text-blue-900">Talent Pool</h1>
 
       {applicants.length === 0 ? (
-        <p className="text-zinc-500">
+        <p className="text-blue-700">
           No applicants yet. Applications will appear here once candidates apply
           to your jobs.
         </p>
@@ -39,16 +39,18 @@ export default async function TalentPoolPage() {
             <Link
               key={applicant.id}
               href={`/company/talent/${applicant.id}`}
-              className="border rounded-lg p-6 hover:border-zinc-400 transition-colors"
+              className="border border-blue-200 rounded-lg p-6 hover:border-blue-500 transition-colors bg-white"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-semibold">{applicant.name}</h3>
-                  <p className="text-sm text-zinc-500">
+                  <h3 className="font-semibold text-blue-900">
+                    {applicant.name}
+                  </h3>
+                  <p className="text-sm text-blue-700">
                     {applicant.email} &middot; {applicant.skills}
                   </p>
                 </div>
-                <div className="text-right text-sm text-zinc-500">
+                <div className="text-right text-sm text-blue-700">
                   {applicant.applications.length} application(s)
                 </div>
               </div>
@@ -57,7 +59,7 @@ export default async function TalentPoolPage() {
                   {applicant.applications.map((app) => (
                     <span
                       key={app.id}
-                      className="text-xs bg-zinc-100 px-2 py-0.5 rounded"
+                      className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded"
                     >
                       {app.job.title}
                     </span>
@@ -68,6 +70,6 @@ export default async function TalentPoolPage() {
           ))}
         </div>
       )}
-    </div>
+    </main>
   );
 }

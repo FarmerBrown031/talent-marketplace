@@ -1,4 +1,5 @@
 import { compare, hash } from "bcryptjs";
+import type { Company } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import {
   signSession,
@@ -42,7 +43,7 @@ export async function destroySession(): Promise<void> {
   cookieStore.delete(SESSION_COOKIE);
 }
 
-export async function getCurrentCompany() {
+export async function getCurrentCompany(): Promise<Company | null> {
   const cookieStore = await getCookieStore();
   const token = cookieStore.get(SESSION_COOKIE)?.value;
   if (!token) return null;
@@ -56,10 +57,22 @@ export async function getCurrentCompany() {
   return company;
 }
 
-export async function requireCompany() {
+export async function requireCompany(): Promise<Company> {
   const company = await getCurrentCompany();
   if (!company) {
     throw new Error("Unauthorized");
   }
   return company;
+}
+
+export async function requireAdmin(): Promise<Company> {
+  const company = await getCurrentCompany();
+  if (!company || company.role !== "admin") {
+    throw new Error("Forbidden");
+  }
+  return company;
+}
+
+export function isAdmin(company: Pick<Company, "role"> | null): boolean {
+  return company?.role === "admin";
 }

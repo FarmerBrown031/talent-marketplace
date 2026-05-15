@@ -91,63 +91,71 @@ export default function ApplyPage() {
     : [];
 
   return (
-    <div className="max-w-xl mx-auto px-4 py-12">
-      <h1 className="text-2xl font-bold mb-6">
+    <div className="max-w-xl mx-auto px-4 py-12 bg-white">
+      <h1 className="text-2xl font-bold mb-6 text-blue-900">
         {job ? `Apply for ${job.title}` : "Apply for this position"}
       </h1>
       {error && (
-        <p className="text-red-600 text-sm mb-4 bg-red-50 p-3 rounded-md">
+        <p className="text-red-700 text-sm mb-4 bg-red-50 border border-red-200 p-3 rounded-md">
           {error}
         </p>
       )}
       {!job ? (
         <div className="space-y-4 animate-pulse">
-          <div className="h-10 bg-zinc-100 rounded-md" />
-          <div className="h-10 bg-zinc-100 rounded-md" />
-          <div className="h-10 bg-zinc-100 rounded-md" />
-          <div className="h-10 bg-zinc-100 rounded-md" />
+          <div className="h-10 bg-blue-100 rounded-md" />
+          <div className="h-10 bg-blue-100 rounded-md" />
+          <div className="h-10 bg-blue-100 rounded-md" />
+          <div className="h-10 bg-blue-100 rounded-md" />
           {[1, 2].map((i) => (
-            <div key={i} className="h-10 bg-zinc-100 rounded-md" />
+            <div key={i} className="h-10 bg-blue-100 rounded-md" />
           ))}
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Name *</label>
+            <label className="block text-sm font-medium mb-1 text-blue-900">
+              Name *
+            </label>
             <input
               name="name"
               required
-              className="w-full border rounded-md px-3 py-2 text-sm"
+              className="w-full border border-blue-200 rounded-md px-3 py-2 text-sm text-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Email *</label>
+            <label className="block text-sm font-medium mb-1 text-blue-900">
+              Email *
+            </label>
             <input
               name="email"
               type="email"
               required
-              className="w-full border rounded-md px-3 py-2 text-sm"
+              className="w-full border border-blue-200 rounded-md px-3 py-2 text-sm text-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Phone</label>
+            <label className="block text-sm font-medium mb-1 text-blue-900">
+              Phone
+            </label>
             <input
               name="phone"
-              className="w-full border rounded-md px-3 py-2 text-sm"
+              className="w-full border border-blue-200 rounded-md px-3 py-2 text-sm text-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Skills *</label>
+            <label className="block text-sm font-medium mb-1 text-blue-900">
+              Skills *
+            </label>
             <input
               name="skills"
               required
               placeholder="e.g. React, Python, Design"
-              className="w-full border rounded-md px-3 py-2 text-sm"
+              className="w-full border border-blue-200 rounded-md px-3 py-2 text-sm text-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           {questions.map((q, i) => (
             <div key={i}>
-              <label className="block text-sm font-medium mb-1">
+              <label className="block text-sm font-medium mb-1 text-blue-900">
                 {q.label}
                 {q.type !== "file" ? " *" : ""}
               </label>
@@ -157,7 +165,7 @@ export default function ApplyPage() {
                   rows={3}
                   value={customAnswers[i]?.answer || ""}
                   onChange={(e) => updateAnswer(q.label, e.target.value)}
-                  className="w-full border rounded-md px-3 py-2 text-sm"
+                  className="w-full border border-blue-200 rounded-md px-3 py-2 text-sm text-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               ) : q.type === "file" ? (
                 <input
@@ -166,14 +174,14 @@ export default function ApplyPage() {
                     const file = e.target.files?.[0];
                     updateAnswer(q.label, file ? file.name : "");
                   }}
-                  className="w-full text-sm"
+                  className="w-full text-sm text-blue-950"
                 />
               ) : (
                 <input
                   required
                   value={customAnswers[i]?.answer || ""}
                   onChange={(e) => updateAnswer(q.label, e.target.value)}
-                  className="w-full border rounded-md px-3 py-2 text-sm"
+                  className="w-full border border-blue-200 rounded-md px-3 py-2 text-sm text-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               )}
             </div>
@@ -181,7 +189,7 @@ export default function ApplyPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="px-6 py-3 bg-black text-white rounded-md hover:bg-zinc-800 disabled:opacity-50"
+            className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
           >
             {submitting ? "Submitting..." : "Submit Application"}
           </button>

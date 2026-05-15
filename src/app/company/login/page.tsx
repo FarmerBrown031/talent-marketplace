@@ -32,49 +32,58 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/company/dashboard");
+    const role = json?.data?.role;
+    router.push(role === "admin" ? "/admin" : "/company/dashboard");
     router.refresh();
   }
 
   return (
-    <div className="flex flex-col items-center justify-center flex-1 px-4">
+    <div className="flex flex-col items-center justify-center flex-1 px-4 bg-white">
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-bold mb-6 text-center">Company Login</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center text-blue-900">
+          Sign in
+        </h1>
         {error && (
-          <p className="text-red-600 text-sm mb-4 bg-red-50 p-3 rounded-md">
+          <p className="text-red-700 text-sm mb-4 bg-red-50 border border-red-200 p-3 rounded-md">
             {error}
           </p>
         )}
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
+            <label className="block text-sm font-medium mb-1 text-blue-900">
+              Email
+            </label>
             <input
               name="email"
               type="email"
               required
-              className="w-full border rounded-md px-3 py-2 text-sm"
+              autoComplete="email"
+              className="w-full border border-blue-200 rounded-md px-3 py-2 text-sm text-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Password</label>
+            <label className="block text-sm font-medium mb-1 text-blue-900">
+              Password
+            </label>
             <input
               name="password"
               type="password"
               required
-              className="w-full border rounded-md px-3 py-2 text-sm"
+              autoComplete="current-password"
+              className="w-full border border-blue-200 rounded-md px-3 py-2 text-sm text-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <button
             type="submit"
             disabled={submitting}
-            className="w-full px-4 py-2 bg-black text-white rounded-md hover:bg-zinc-800 disabled:opacity-50"
+            className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
           >
-            {submitting ? "Logging in..." : "Login"}
+            {submitting ? "Signing in..." : "Sign in"}
           </button>
         </form>
-        <p className="text-sm text-zinc-500 text-center mt-4">
+        <p className="text-sm text-blue-700 text-center mt-4">
           Don&apos;t have an account?{" "}
-          <Link href="/company/register" className="underline">
+          <Link href="/company/register" className="underline font-medium">
             Register
           </Link>
         </p>

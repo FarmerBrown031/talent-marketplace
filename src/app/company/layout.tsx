@@ -6,9 +6,9 @@ export default function CompanyLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col flex-1">
-      <header className="border-b bg-white">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div className="flex flex-col flex-1 bg-white">
+      <header className="border-b border-blue-200 bg-blue-600 text-white">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/company/dashboard" className="text-lg font-bold">
             Talent Marketplace
           </Link>
@@ -19,15 +19,21 @@ export default function CompanyLayout({
             <Link href="/company/jobs" className="hover:underline">
               Jobs
             </Link>
+            <Link href="/company/boards" className="hover:underline">
+              Boards
+            </Link>
             <Link href="/company/talent" className="hover:underline">
               Talent
+            </Link>
+            <Link href="/company/team" className="hover:underline">
+              Team
             </Link>
             <form action="/api/auth/logout" method="POST">
               <button
                 type="submit"
-                className="text-zinc-500 hover:underline"
+                className="text-blue-100 hover:text-white hover:underline"
               >
-                Logout
+                Sign out
               </button>
             </form>
           </nav>

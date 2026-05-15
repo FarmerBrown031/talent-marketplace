@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { recordAudit } from "@/lib/audit";
 import { logger } from "@/lib/logger";
 import type { ApiResponse } from "@/lib/types";
 
@@ -78,6 +79,16 @@ export async function POST(
         applicantId: applicant.id,
         customAnswers: JSON.stringify(customAnswers),
       },
+    });
+
+    await recordAudit({
+      actorId: applicant.id,
+      actorType: "applicant",
+      action: "application.create",
+      targetType: "Application",
+      targetId: application.id,
+      companyId: job.companyId,
+      metadata: { jobId: id, jobTitle: job.title, email },
     });
 
     return NextResponse.json(

@@ -2,8 +2,12 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getCurrentCompany } from "@/lib/auth";
+import { APPLICATION_STAGES } from "@/lib/types";
+import type { ApplicationStatus } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
+
+const STAGE_LOOKUP = new Map(APPLICATION_STAGES.map((s) => [s.id, s.label]));
 
 export default async function JobApplicantsPage({
   params,
@@ -25,60 +29,64 @@ export default async function JobApplicantsPage({
     },
   });
 
-  if (!job || job.companyId !== company.id) {
+  if (!job || (job.companyId !== company.id && company.role !== "admin")) {
     return (
-      <div className="max-w-5xl mx-auto px-4 py-12">
-        <p className="text-zinc-500">Job not found.</p>
-      </div>
+      <main className="max-w-6xl mx-auto px-4 py-12 bg-white">
+        <p className="text-blue-700">Job not found.</p>
+      </main>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-12 w-full">
+    <main className="max-w-6xl mx-auto px-4 py-10 w-full bg-white">
       <Link
         href="/company/jobs"
-        className="text-sm text-zinc-500 hover:underline mb-4 inline-block"
+        className="text-sm text-blue-700 hover:underline mb-4 inline-block"
       >
-        &larr; Back to jobs
+        ← Back to jobs
       </Link>
-      <h1 className="text-2xl font-bold mb-2">{job.title}</h1>
-      <p className="text-sm text-zinc-500 mb-8">
-        {job.applications.length} applicant(s)
+      <div className="flex flex-wrap items-baseline justify-between gap-2 mb-2">
+        <h1 className="text-2xl font-bold text-blue-900">{job.title}</h1>
+        <Link
+          href={`/company/jobs/${job.id}/board`}
+          className="text-sm px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        >
+          Open Kanban Board
+        </Link>
+      </div>
+      <p className="text-sm text-blue-700 mb-8">
+        {job.applications.length} applicant
+        {job.applications.length === 1 ? "" : "s"}
       </p>
 
       {job.applications.length === 0 ? (
-        <p className="text-zinc-500">No applications yet.</p>
+        <p className="text-blue-700">No applications yet.</p>
       ) : (
-        <div className="grid gap-4">
-          {job.applications.map((app) => (
-            <Link
-              key={app.id}
-              href={`/company/talent/${app.applicant.id}`}
-              className="border rounded-lg p-6 flex items-center justify-between hover:border-zinc-400 transition-colors"
-            >
-              <div>
-                <h3 className="font-semibold">{app.applicant.name}</h3>
-                <p className="text-sm text-zinc-500">
-                  {app.applicant.email} &middot; {app.applicant.skills}
-                </p>
-              </div>
-              <span
-                className={`text-xs px-2 py-0.5 rounded-full ${
-                  app.status === "new"
-                    ? "bg-blue-100 text-blue-700"
-                    : app.status === "reviewed"
-                    ? "bg-yellow-100 text-yellow-700"
-                    : app.status === "hired"
-                    ? "bg-green-100 text-green-700"
-                    : "bg-red-100 text-red-700"
-                }`}
+        <div className="grid gap-3">
+          {job.applications.map((app) => {
+            const status = app.status as ApplicationStatus;
+            return (
+              <Link
+                key={app.id}
+                href={`/company/talent/${app.applicant.id}`}
+                className="border border-blue-200 rounded-lg p-5 flex items-center justify-between hover:border-blue-500 transition-colors bg-white"
               >
-                {app.status}
-              </span>
-            </Link>
-          ))}
+                <div className="min-w-0">
+                  <h3 className="font-semibold text-blue-900 truncate">
+                    {app.applicant.name}
+                  </h3>
+                  <p className="text-sm text-blue-700 truncate">
+                    {app.applicant.email} &middot; {app.applicant.skills}
+                  </p>
+                </div>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 capitalize whitespace-nowrap">
+                  {STAGE_LOOKUP.get(status) ?? status}
+                </span>
+              </Link>
+            );
+          })}
         </div>
       )}
-    </div>
+    </main>
   );
 }

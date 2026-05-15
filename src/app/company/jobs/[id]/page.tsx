@@ -92,32 +92,34 @@ export default function EditJobPage() {
 
   if (!job) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-12">
-        <p className="text-zinc-500">Loading...</p>
+      <div className="max-w-2xl mx-auto px-4 py-12 bg-white">
+        <p className="text-blue-700">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-12 w-full">
-      <h1 className="text-2xl font-bold mb-6">Edit Job</h1>
+    <main className="max-w-2xl mx-auto px-4 py-10 w-full bg-white">
+      <h1 className="text-2xl font-bold mb-6 text-blue-900">Edit Job</h1>
       {error && (
-        <p className="text-red-600 text-sm mb-4 bg-red-50 p-3 rounded-md">
+        <p className="text-red-700 text-sm mb-4 bg-red-50 border border-red-200 p-3 rounded-md">
           {error}
         </p>
       )}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Title *</label>
+          <label className="block text-sm font-medium mb-1 text-blue-900">
+            Title *
+          </label>
           <input
             name="title"
             defaultValue={job.title}
             required
-            className="w-full border rounded-md px-3 py-2 text-sm"
+            className="w-full border border-blue-200 rounded-md px-3 py-2 text-sm text-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">
+          <label className="block text-sm font-medium mb-1 text-blue-900">
             Description *
           </label>
           <textarea
@@ -125,25 +127,29 @@ export default function EditJobPage() {
             defaultValue={job.description}
             required
             rows={5}
-            className="w-full border rounded-md px-3 py-2 text-sm"
+            className="w-full border border-blue-200 rounded-md px-3 py-2 text-sm text-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Location *</label>
+          <label className="block text-sm font-medium mb-1 text-blue-900">
+            Location *
+          </label>
           <input
             name="location"
             defaultValue={job.location}
             required
-            className="w-full border rounded-md px-3 py-2 text-sm"
+            className="w-full border border-blue-200 rounded-md px-3 py-2 text-sm text-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Type *</label>
+          <label className="block text-sm font-medium mb-1 text-blue-900">
+            Type *
+          </label>
           <select
             name="type"
             defaultValue={job.type}
             required
-            className="w-full border rounded-md px-3 py-2 text-sm"
+            className="w-full border border-blue-200 rounded-md px-3 py-2 text-sm text-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="remote">Remote</option>
             <option value="onsite">On-site</option>
@@ -151,11 +157,13 @@ export default function EditJobPage() {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Status</label>
+          <label className="block text-sm font-medium mb-1 text-blue-900">
+            Status
+          </label>
           <select
             name="status"
             defaultValue={job.status}
-            className="w-full border rounded-md px-3 py-2 text-sm"
+            className="w-full border border-blue-200 rounded-md px-3 py-2 text-sm text-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="open">Open</option>
             <option value="closed">Closed</option>
@@ -163,13 +171,13 @@ export default function EditJobPage() {
         </div>
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="text-sm font-medium">
+            <label className="text-sm font-medium text-blue-900">
               Custom Application Questions
             </label>
             <button
               type="button"
               onClick={addQuestion}
-              className="text-sm px-3 py-1 border rounded-md hover:bg-zinc-50"
+              className="text-sm px-3 py-1 border border-blue-200 text-blue-700 rounded-md hover:bg-blue-50"
             >
               + Add Question
             </button>
@@ -180,12 +188,12 @@ export default function EditJobPage() {
                 value={q.label}
                 onChange={(e) => updateQuestion(i, "label", e.target.value)}
                 placeholder="Question text"
-                className="flex-1 border rounded-md px-3 py-2 text-sm"
+                className="flex-1 border border-blue-200 rounded-md px-3 py-2 text-sm text-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <select
                 value={q.type}
                 onChange={(e) => updateQuestion(i, "type", e.target.value)}
-                className="border rounded-md px-3 py-2 text-sm"
+                className="border border-blue-200 rounded-md px-3 py-2 text-sm text-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="text">Text</option>
                 <option value="textarea">Textarea</option>
@@ -194,7 +202,7 @@ export default function EditJobPage() {
               <button
                 type="button"
                 onClick={() => removeQuestion(i)}
-                className="text-sm px-2 py-1 text-red-600 hover:bg-red-50 rounded"
+                className="text-sm px-2 py-1 text-red-700 hover:bg-red-50 rounded"
               >
                 Remove
               </button>
@@ -204,11 +212,11 @@ export default function EditJobPage() {
         <button
           type="submit"
           disabled={submitting}
-          className="px-6 py-3 bg-black text-white rounded-md hover:bg-zinc-800 disabled:opacity-50"
+          className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
         >
           {submitting ? "Saving..." : "Save Changes"}
         </button>
       </form>
-    </div>
+    </main>
   );
 }

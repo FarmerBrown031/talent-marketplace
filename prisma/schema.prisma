@@ -12,8 +12,27 @@ model Company {
   name         String
   email        String   @unique
   passwordHash String
+  role         String   @default("owner")
   createdAt    DateTime @default(now())
   jobs         Job[]
+  users        User[]
+  auditLogs    AuditLog[]
+
+  @@index([role])
+}
+
+model User {
+  id           String   @id @default(uuid())
+  companyId    String
+  company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  name         String
+  email        String   @unique
+  role         String   @default("member")
+  status       String   @default("active")
+  createdAt    DateTime @default(now())
+
+  @@index([companyId])
+  @@index([role])
 }
 
 model Job {
@@ -30,6 +49,7 @@ model Job {
   applications    Application[]
 
   @@index([companyId])
+  @@index([status])
 }
 
 model Applicant {
@@ -51,10 +71,33 @@ model Application {
   applicantId   String
   applicant     Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
   customAnswers String
-  status        String    @default("new")
+  status        String    @default("applied")
+  rating        Int       @default(0)
+  notes         String    @default("")
+  order         Int       @default(0)
   createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   @@unique([jobId, applicantId])
   @@index([jobId])
   @@index([applicantId])
+  @@index([status])
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorId    String?
+  actorType  String
+  action     String
+  targetType String
+  targetId   String?
+  metadata   String   @default("{}")
+  companyId  String?
+  company    Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  createdAt  DateTime @default(now())
+
+  @@index([actorId])
+  @@index([targetType, targetId])
+  @@index([companyId])
+  @@index([createdAt])
 }

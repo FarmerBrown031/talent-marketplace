@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword, createSession } from "@/lib/auth";
+import { recordAudit } from "@/lib/audit";
 import { logger } from "@/lib/logger";
 import type { ApiResponse } from "@/lib/types";
 
@@ -44,9 +45,24 @@ export async function POST(request: Request) {
     }
 
     await createSession(company.id);
+    await recordAudit({
+      actorId: company.id,
+      actorType: company.role === "admin" ? "admin" : "company",
+      action: "login",
+      targetType: "Company",
+      targetId: company.id,
+      companyId: company.id,
+    });
 
     return NextResponse.json(
-      { data: { id: company.id, name: company.name, email: company.email } } satisfies ApiResponse,
+      {
+        data: {
+          id: company.id,
+          name: company.name,
+          email: company.email,
+          role: company.role,
+        },
+      } satisfies ApiResponse,
       { status: 200 }
     );
   } catch (err) {
